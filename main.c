@@ -47,7 +47,7 @@ void __ISR(_ADC_VECTOR,IPL5SOFT) _ADC_HANDLER(void){
 }
 //TODO - PWM @100kHz
 //		-ADC for Potentiometer, value sets duty cycle of PWM
-//		Potentiometer = R37/RC8/AN14
+
 int main(void) {
 	////////////////////////////////////////////////////////////////
 	///start set clock
@@ -85,6 +85,10 @@ int main(void) {
 	////////////////////////////////////////////////////////////////
 	//END set clock
 	
+	//		Potentiometer = R37/RC8/AN14    
+    ANSELCbits.ANSC8 = 1; //Analog Pin - Potentiometer
+    TRISCbits.TRISC8 = 1; //Input - Potentiometer
+	
 	__builtin_disable_interrupts();
 	
 	//ADC - set all to zero
@@ -111,7 +115,7 @@ int main(void) {
     AD1CON3bits.SAMC = 2; // Sample time SAMC*Tad > 0 2=560ns
     
     AD1CSS = 0; //Deselect all channels
-    AD1CSSbits.CSS2 = 1; // Scan channel 2
+    AD1CSSbits.CSS14 = 1; // Scan channel 14 - since Potentiometer is AN14
     
     AD1CON1bits.ON = 1; //On
     AD1CON5bits.ASEN = 1; //Auto-scan enabled
