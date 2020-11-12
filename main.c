@@ -80,7 +80,54 @@ int main(void) {
     SYSKEY = 0; //Re-lock oscillator registers  
 	////////////////////////////////////////////////////////////////
 	//END set clock
-
+	
+	__builtin_disable_interrupts();
+	
+	//ADC - set all to zero
+	AD1CON1 = 0;
+	AD1CON2 = 0;
+	AD1CON3 = 0;
+	
+	//ADC Setup
+	AD1CON1bits.ON = 0; //Off
+	AD1CON1bits.MODE12 = 0; //10 bit mode - could be 12 as well, does not really matter
+	AD1CON1bits.FORM = 0b000; //form = 0000 0000 0000 0000 0000 00dd dddd dddd
+	AD1CON1bits.SSRC = 0b0101;//
+	AD1CON1bits.ASAM = 0; //Sampling begins when SAMP is set
+	
+	AD1CON2bits.CSCNA = 1; //enable input scans
+    AD1CON2bits.BUFM = 0; //The ADC Results registers are configured as one buffer
+    AD1CON2bits.SMPI = 1-1; //Set number of conversions per interrupt to 1
+    
+	AD1CON3bits.ADRC = 0; //Clock derived from Peripheral Bus Clock
+    AD1CHSbits.CH0NA = 0b000; //Negative Input is VrefL = AVSS
+    AD1CON2bits.VCFG = 0b000; //AVdd & AVss
+    // ADCS = (Tad/(2*Tsrc))-1 = (280ns/(2*1/24e6))-1 = 2.36 -> so make 3
+    AD1CON3bits.ADCS = 3;//makes Tad > 280ns
+    AD1CON3bits.SAMC = 2; // Sample time SAMC*Tad > 0 2=560ns
+    
+    AD1CSS = 0; //Deselect all channels
+    AD1CSSbits.CSS2 = 1; // Scan channel 2
+    
+    AD1CON1bits.ON = 1; //On
+    AD1CON5bits.ASEN = 1; //Auto-scan enabled
+    ///  
+    IPC8bits.AD1IP = 5; //ADC interrupt priority
+    IPC8bits.AD1IS = 0; //ADC sub-priority
+    IEC1bits.AD1IE = 1; //Enable ADC interrupt
+    IFS1bits.AD1IF = 0; //Reset Flag
+	
+	T1CONbits.ON = 0; //Switch off timer 1
+    T1CONbits.TCS = 0; //Internal CLock @24 MHz
+    T1CONbits.TCKPS = 0b000; //1:1
+    TMR1 = 0; //Initial Value
+    PR1 = 239; // Set timer overflow value -- Gives us 100kHz sampling speed for ADC
+    T1CONbits.ON = 1; //Switch on
+    
+    INTCONbits.MVEC = 1; //Multi-vectored mode
+	
+	__builtin_enable_interrupts();
+	
     while (1) {
 
     }
