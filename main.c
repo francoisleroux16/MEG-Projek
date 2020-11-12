@@ -41,8 +41,11 @@
 #include <sys/attribs.h>
 
 void __ISR(_ADC_VECTOR,IPL5SOFT) _ADC_HANDLER(void){
-	int inputval = ADC1BUF0 ;//Input from Channel 2
+	int inputval = ADC1BUF0 ;//Input from Channel 14
 	float voltage = (inputval/1023)*3.3 ;//Gives the voltage received at the pin
+	float percentage = inputval/1023 ; //To be used on Duty Cycle
+	
+	CCP1RB = percentage * CCP1RA; //
 	
 }
 //TODO - PWM @100kHz
@@ -158,8 +161,8 @@ int main(void) {
     CCP1TMR = 0; //Start the timer at 0
     CCP1RA = 0; //Value to start going high
     //We initialise with a duty cycle of 100%
-    CCP1RB = 4095; //Value to start going low 4095
-    CCP1PR = 4095; //Value to overflow - start from 0 - 5999 4095
+    CCP1RB = 239; //Value to start going low 4095
+    CCP1PR = 239; //Value to overflow - therefore now at 100 kHz
     CCP1CON3bits.DT = 0b000010; //Inserts two dead bits
     
     CCP1CON1bits.ON = 1; //Enable the Module
