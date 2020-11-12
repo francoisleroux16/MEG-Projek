@@ -40,6 +40,10 @@
 #include <stdbool.h>
 #include <sys/attribs.h>
 
+
+//TODO - PWM @100kHz
+//		-ADC for Potentiometer, value sets duty cycle of PWM
+//		Potentiometer = R37/RC8/AN14
 int main(void) {
 	////////////////////////////////////////////////////////////////
 	///start set clock
