@@ -40,7 +40,11 @@
 #include <stdbool.h>
 #include <sys/attribs.h>
 
-
+void __ISR(_ADC_VECTOR,IPL5SOFT) _ADC_HANDLER(void){
+	int inputval = ADC1BUF0 ;//Input from Channel 2
+	float voltage = (inputval/1023)*3.3 ;//Gives the voltage received at the pin
+	
+}
 //TODO - PWM @100kHz
 //		-ADC for Potentiometer, value sets duty cycle of PWM
 //		Potentiometer = R37/RC8/AN14
