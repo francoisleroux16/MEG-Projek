@@ -93,6 +93,16 @@ int main(void) {
     TRISCbits.TRISC8 = 1; //Input - Potentiometer
 	
 	__builtin_disable_interrupts();
+	// PWM
+	ANSELAbits.ANSA12 = 0;
+    ANSELAbits.ANSA2 = 0;
+    ANSELCbits.ANSC5  = 0;
+    
+    // Set our output pins for the PWM as OUPUT
+    TRISAbits.TRISA12 = 0;
+    TRISDbits.TRISD1 = 0;
+    TRISAbits.TRISA2 = 0;
+    TRISCbits.TRISC5 = 0;
 	
 	//ADC - set all to zero
 	AD1CON1 = 0;
