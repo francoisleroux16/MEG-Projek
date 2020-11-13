@@ -48,8 +48,7 @@ void __ISR(_ADC_VECTOR,IPL5SOFT) _ADC_HANDLER(void){
 	CCP1RB = percentage * CCP1RA; //
 	
 }
-//TODO - PWM @100kHz
-//		-ADC for Potentiometer, value sets duty cycle of PWM
+
 
 int main(void) {
 	////////////////////////////////////////////////////////////////
@@ -142,7 +141,7 @@ int main(void) {
     T1CONbits.TCS = 0; //Internal CLock @24 MHz
     T1CONbits.TCKPS = 0b000; //1:1
     TMR1 = 0; //Initial Value
-    PR1 = 239; // Set timer overflow value -- Gives us 100kHz sampling speed for ADC
+    PR1 = 23999; // Set timer overflow value -- Gives us 100kHz sampling speed for ADC
     T1CONbits.ON = 1; //Switch on
     
     INTCONbits.MVEC = 1; //Multi-vectored mode
@@ -159,7 +158,7 @@ int main(void) {
     //CCP1CON1bits.MOD = 0b0100; //Set as Dual Edge Compare Mode
     CCP1CON1bits.MOD = 0b0101; //Dual edge buffered
     CCP1CON1bits.CLKSEL = 0; //Select timer as System Clock, i.e. 24Mhz
-    CCP1CON1bits.TMRPS = 0b00; //Prescaler -> 1:1 i.e. 24Mhz(currently)) 0b01 1:4
+    CCP1CON1bits.TMRPS = 0b00; //Prescaler -> 1:1 i.e. 24Mhz(currently)
     
     CCP1CON2bits.OCDEN = 1; //Enable AN3/C1INC/C2INA/RP7/OCM2D/RB1 - for low side N-channel
     CCP1CON2bits.OCAEN = 1; //-for high side P-channel
@@ -171,8 +170,8 @@ int main(void) {
     CCP1TMR = 0; //Start the timer at 0
     CCP1RA = 0; //Value to start going high
     //We initialise with a duty cycle of 100%
-    CCP1RB = 239; //Value to start going low 4095
-    CCP1PR = 239; //Value to overflow - therefore now at 100 kHz
+    CCP1RB = 23999; //Value to start going low 
+    CCP1PR = 23999; //Value to overflow - therefore now at 1000Hz
     CCP1CON3bits.DT = 0b000010; //Inserts two dead bits
     
     CCP1CON1bits.ON = 1; //Enable the Module
