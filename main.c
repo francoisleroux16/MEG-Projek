@@ -165,7 +165,7 @@ int main(void) {
     CCP1CON2bits.OCBEN = 1; //High Side P-channel
     CCP1CON2bits.OCCEN = 1; //Low Side N-channel
     
-    CCP1CON3bits.OUTM = 0b101; //Full bridge output
+    CCP1CON3bits.OUTM = 0b101; //Full bridge output forward- change from forward to reverse with a button
     
     CCP1TMR = 0; //Start the timer at 0
     CCP1RA = 0; //Value to start going high
@@ -176,10 +176,20 @@ int main(void) {
     
     CCP1CON1bits.ON = 1; //Enable the Module
 	
+	//Button to switch to from forward to backward
+	TRISBbits.TRISB9 = 1; //input
+	
 	
 	__builtin_enable_interrupts();
 	
     while (1) {
+		int RB9 = PORTBbits.RB9; //Read the state of Button RB9
+		if(RB9==0){
+			CCP1CON3bits.OUTM = 0b101; //Forward
+		}
+		else{
+			CCP1CON3bits.OUTM = 0b100; //Reverse
+		}
 
     }
 }
